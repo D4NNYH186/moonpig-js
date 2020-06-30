@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Customer Order</title>
+</head>
+
+<body>
+    <br>
+    <br>
+    <h1 class="center">Customer Order </h1>
+    <br>
+    <br>
+    <div class="center">
+        <form class="center" action='/order' method='POST'>
+            <div class="center">
+                <label for='email'>Email:</label>
+                <input class="resize1" id='email' type='text' name='email' placeholder='Email address'>
+            </div>
+            <br>
+            <div class="center">
+                <label for='full-name'>Full Name:</label>
+                <br>
+                <input class="resize1" id='full-name' type='text' name='fullName' placeholder='Full Name'>
+                <br>
+            </div>
+            <div class="center">
+                <label for='billing-address'>Billing Address:</label>
+                <br>
+                <input class="resize" id='billing-address' type='text' name='billingAddress'
+                    placeholder='Billing Address'>
+                <br>
+            </div>
+            <div class="center">
+                <label for='dispatch-address'>Dispatch Address:</label>
+                <br>
+                <input class="resize" id='dispatch-address' type='text' name='dispatchAddress'
+                    placeholder='Dispatch Address'>
+                <br>
+            </div>
+            <div class="center">
+                <label for='status'>Product Type:</label>
+                <br>
+                {{!-- <select name="config[mode]">
+                    <option value="" selected="selected"></option>
+                    <option value="card">Card</option>
+                    <option value="mug">Mug</option>
+                    <option value="tshirt">T-Shirt</option>
+                    <option value="gift">Gift</option>
+                </select> --}}
+                <input class="resize1" id='productType' type='text' name='productType' placeholder='Product'>
+                <br>
+            </div>
+            <div class="center">
+                <label for="quantity"> Quantity:</label>
+                <input class="resize2" id='quantity' type='int' name='quantity'>
+                <br>
+                <input id='addOrder' type='submit' value='Add To Order'>
+                <br>
+                <br>
+            </div>
+            <div class="center">
+                <input id='order' type='submit' value='Submit Order'>
+            </div>
+    </div>
+    </form>
+</body>
+
+</html>
