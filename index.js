@@ -53,45 +53,12 @@ app.post('/order', async(req, res) =>{
     });
 
 
-app.get('/factory', (req, res)=>{
-    res.render('factory')
+app.get('/factory', async (req, res)=>{
+    let data = await factorySchema.find({});
+    data = data.map((item) => item.toObject())
+    res.render('factory', {data})
+    //: factoryName, productType, totalCapacity, currentCapacity, remainingCapacity
 });
-
-const guernseyFactory = new factorySchema({
-    factoryName: "GuernseyLoveIsland Ltd Factory",
-    productType: ["Cards", "Mugs", "T-Shirts"],
-    totalCapacity: 10000,
-    currentCapacity:0,
-    remainingCapacity:0,
-})
-guernseyFactory.save();
-
-const proFactory = new factorySchema({
-    factoryName: "ProFulfillingWorld Ltd Factory",
-    productType: ["Cards", "Gifts"],
-    totalCapacity: 5000,
-    currentCapacity:0,
-    remainingCapacity:0,
-})
-proFactory.save();
-
-const coolFactory = new factorySchema({
-    factoryName: "CygnificantlyCool Ltd Factory",
-    productType: ["Gifts"],
-    totalCapacity: 7000,
-    currentCapacity:0,
-    remainingCapacity:0,
-})
-coolFactory.save();
-
-const doctorFactory = new factorySchema({
-    factoryName: "DoctorsPackingSolutions Ltd Factory",
-    productType: ["T-Shirts"],
-    totalCapacity: 2000,
-    currentCapacity:0,
-    remainingCapacity:0,
-})
-doctorFactory.save();
 
 
 app.get('/engineer', (req, res)=>{
@@ -102,3 +69,38 @@ app.listen(3000,()=>{
     console.log('server is listening on port 3000')
 })
 
+// const guernseyFactory = new factorySchema({
+    //     factoryName: "GuernseyLoveIsland Ltd Factory",
+    //     productType: ["Cards", "Mugs", "T-Shirts"],
+    //     totalCapacity: 10000,
+    //     currentCapacity:0,
+    //     remainingCapacity:0,
+    // })
+    // guernseyFactory.save();
+    
+    // const proFactory = new factorySchema({
+    //     factoryName: "ProFulfillingWorld Ltd Factory",
+    //     productType: ["Cards", "Gifts"],
+    //     totalCapacity: 5000,
+    //     currentCapacity:0,
+    //     remainingCapacity:0,
+    // })
+    // proFactory.save();
+    
+    // const coolFactory = new factorySchema({
+    //     factoryName: "CygnificantlyCool Ltd Factory",
+    //     productType: ["Gifts"],
+    //     totalCapacity: 7000,
+    //     currentCapacity:0,
+    //     remainingCapacity:0,
+    // })
+    // coolFactory.save();
+    
+    // const doctorFactory = new factorySchema({
+    //     factoryName: "DoctorsPackingSolutions Ltd Factory",
+    //     productType: ["T-Shirts"],
+    //     totalCapacity: 2000,
+    //     currentCapacity:0,
+    //     remainingCapacity:0,
+    // })
+    // doctorFactory.save();

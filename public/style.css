@@ -7,6 +7,7 @@
 }
 body{
     font-family: 'Roboto' ;
+    color: black;
 }
 
 .img{
@@ -52,12 +53,11 @@ ul{
 li{
     margin-right:5px;
     padding: 5px;
-    color: white;
 }
 
 .column{
     display: flex;
-
+    flex-direction: column;
 
 }
 .margin2{
@@ -79,3 +79,11 @@ li{
     height: 35px;
     width: 40px;
 }
+
+.factory-container{
+    display: flex;
+    justify-content: space-between;
+    padding-left:30px;
+    flex-direction: column;
+}
+

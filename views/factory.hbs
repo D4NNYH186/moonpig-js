@@ -9,7 +9,28 @@
 </head>
 
 <body>
+    <br><br>
     <h1> Factory Page </h1>
+    <br><br>
+    <br><br>
+    <div class="factory-container">
+    {{#each data}}
+       <ul>
+           <li>Factory Name:<br><br>{{this.factoryName}}</li>
+           <br>
+           <li>Product Type:<br><br>{{this.productType}}</li>
+           <br>
+           <li>Total Capacity:<br><br>{{this.totalCapacity}}</li>
+           <br>
+           <li>Current Capacity:<br><br>{{this.currentCapacity}}</li>
+           <br>
+           <li> Remaining Capacity:<br><br>{{this.remainingCapacity}}</li>
+       </ul>
+       <br>
+    {{/each}}
+
+</ul>
+</div>
 </body>
 
 </html>
