@@ -34,6 +34,23 @@ app.get('/order', (req, res)=>{
 });
 
 app.post('/order', async(req, res) =>{
+    const cardButton = document.getElementById("card-button");
+    const mugButton = document.getElementById("mug-button");
+    const tshirtButton = document.getElementById("t-shirt-button");
+    const giftButton = document.getElementById("gift-button");
+    cardButton.addEventListener("click", ()=> {
+        productType.textContent = ("Card")
+    });
+    mugButton.addEventListener("click", ()=> {
+        productType.input.textContent = ("Mug")
+    });
+    giftButton.addEventListener("click", ()=> {
+        productType.input.textContent = ("Gift")
+    });
+    tshirtButton.addEventListener("click", ()=> {
+        productType.input.textContent = ("T-Shirt")
+    });
+    console.log(req.body.productType);
     const newOrder = new orderSchema({
             fullName: req.body.fullName,
             email: req.body.email,
@@ -48,21 +65,24 @@ app.post('/order', async(req, res) =>{
         newOrder.save()
 
         res.render('order', {newOrder:newOrder.toObject()});
-        console.log(newOrder);
+        // console.log(newOrder);
+        
         
     });
 
 
-app.get('/factory', async (req, res)=>{
+app.get('/engineer', async (req, res)=>{
     let data = await factorySchema.find({});
     data = data.map((item) => item.toObject())
-    res.render('factory', {data})
+    res.render('engineer', {data})
     //: factoryName, productType, totalCapacity, currentCapacity, remainingCapacity
 });
 
 
-app.get('/engineer', (req, res)=>{
-    res.render('engineer')
+app.get('/factory', async (req, res)=>{
+    let data1 = await orderSchema.find({});
+    data1 = data1.map((item) => item.toObject())
+    res.render('factory', {data1})
 });
 
 app.listen(3000,()=>{
@@ -104,3 +124,4 @@ app.listen(3000,()=>{
     //     remainingCapacity:0,
     // })
     // doctorFactory.save();
+ 

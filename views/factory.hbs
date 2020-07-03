@@ -14,17 +14,23 @@
     <br><br>
     <br><br>
     <div class="factory-container">
-    {{#each data}}
+    {{#each data1}}
        <ul>
-           <li>Factory Name:<br><br>{{this.factoryName}}</li>
+           <li> Order ID:<br><br>{{this.id}}</li>
            <br>
-           <li>Product Type:<br><br>{{this.productType}}</li>
+           <li> Order Date:<br><br>{{this.orderDate}}</li>
            <br>
-           <li>Total Capacity:<br><br>{{this.totalCapacity}}</li>
+           <li>Customer Name:<br><br>{{this.fullName}}</li>
            <br>
-           <li>Current Capacity:<br><br>{{this.currentCapacity}}</li>
+           <li>Email:<br><br>{{this.email}}</li>
            <br>
-           <li> Remaining Capacity:<br><br>{{this.remainingCapacity}}</li>
+           <li>Dispatch Address:<br><br>{{this.dispatchAddress}}</li>
+           <br>
+           <li>Billing Address:<br><br>{{this.billingAddress}}</li>
+           <br>
+           <li> Product:<br><br>{{this.productType}}</li>
+           <br>
+           <li> Quantity:<br><br>{{this.quantity}}</li>
        </ul>
        <br>
     {{/each}}
@@ -32,5 +38,3 @@
 </ul>
 </div>
 </body>
-
-</html>
