@@ -1,32 +1,26 @@
 const {Schema, model} = require ("mongoose");
 
-// const counterFunction = ()=>{
-//     let orderID = 0
-//     let orderArray = []
-//     for (let index = 1; index < orderArray.length; index++) {
-//         orderID ++
-        
-//     }
-//     return orderID;
-// }
-
-// const orderId = counterFunction()
-
-
 const orderSchema = new Schema ({
     fullName: {type: String, required: true, unique: false },
     email: {type: String, required: true, unique: false },
     dispatchAddress: {type: String, required: true, unique: false },
     billingAddress: {type: String, required: true, unique: false },
-    // orderID: {type: Number, default: orderId, required: true, unique: true },
     orderDate: {type: Date, default: Date.now},
-    productType: {type: String, required: true, unique: false },
-    quantity: {type: Number, required: true, unique: false}
-},
-{
+    tshirt: {type: Number, required: false, unique: false },
+    mug: {type: Number, required: false, unique: false },
+    card: {type: Number, required: false, unique: false },
+    gift: {type: Number, required: false, unique: false },
+    factoryToProduce: {type: String}
+         
+ }, {
     toObject: {
         virtuals: true
     }
 })
+
+
+orderSchema.statics.findID = async function({findMe}) {
+    await this.findOne({findMe})
+}
 
 module.exports = model("orders", orderSchema)

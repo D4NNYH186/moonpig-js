@@ -16,6 +16,8 @@
     <div class="factory-container">
     {{#each data1}}
        <ul>
+           <li> Factory Name: <br><br> {{this.factoryToProduce}}</li>
+           <br>
            <li> Order ID:<br><br>{{this.id}}</li>
            <br>
            <li> Order Date:<br><br>{{this.orderDate}}</li>
@@ -28,12 +30,32 @@
            <br>
            <li>Billing Address:<br><br>{{this.billingAddress}}</li>
            <br>
-           <li> Product:<br><br>{{this.productType}}</li>
+           <li> Mug:<br><br>{{this.mug}}</li>
            <br>
-           <li> Quantity:<br><br>{{this.quantity}}</li>
+           <li> Gift:<br><br>{{this.gift}}</li>
+           <br>
+           <li> T-Shirt:<br><br>{{this.tshirt}}</li>
+           <br>
+           <li> Card:<br><br>{{this.card}}</li>
+           <br>
+
        </ul>
        <br>
     {{/each}}
+
+<form action="/factory" method="post">
+<label for="findFactory">Please enter the factory name:</label>
+<input type="text" name="findFactory" id="findFactory">
+<input type="submit" name= "findFactoryButton" id="findFactoryButton" value="Find Factory">
+</form>
+{{#each findFactory}}
+ <ul>
+           <li> Factory Name:<br><br>{{this.factoryName}}</li>
+           <br>
+           <li> Product Type:<br><br>{{this.productType}}</li>
+           <br>
+       </ul>
+{{/each}}
 
 </ul>
 </div>

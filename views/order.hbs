@@ -11,7 +11,7 @@
 <body>
     <br>
     <br>
-    <h1 class="center">Customer Order </h1>
+    <h1 class="center">{{err}}</h1>
     <br>
     <br>
     <div class="center">
@@ -42,23 +42,31 @@
                 <br>
             </div>
             <div class="center">
-                <label for='productType'>Product Type:</label>
+                <label for='productType'>T-Shirt:</label>
                 <br>
-                {{!-- <button id="card-button">Card</button>
-                <button id="gift-button">Gift</button>
-                <button id="t-shirt-button">T-Shirt</button>
-                <button id="mug-button">Mug</button> --}}
                 <br>
-                <input class="resize1" id='productType' type='text' name='productType' placeholder='Product'> 
+                <input class="resize1" id='T-Shirt' type='number' name='tshirt' placeholder='T-Shirt'> 
+                <label for='productType'>Mug:</label>
+                <br>
+                <br>
+                <input class="resize1" id='Mug' type='number' name='mug' placeholder='Mug'> 
+                <label for='productType'>Gift:</label>
+                <br>
+                <br>
+                <input class="resize1" id='Gift' type='number' name='gift' placeholder='Gift'> 
+                <label for='productType'>Card:</label>
+                <br>
+                <br>
+                <input class="resize1" id='Card' type='number' name='card' placeholder='Card'> 
             </div>
-            <div class="center">
-                <label for="quantity"> Quantity:</label>
+            {{!-- <div class="center"> --}}
+                {{!-- <label for="quantity"> Quantity:</label>
                 <input class="resize2" id='quantity' type='int' name='quantity'>
+                <br> --}}
+                {{!-- <input id='addOrder' type='submit' value='Add To Order'>
                 <br>
-                <input id='addOrder' type='submit' value='Add To Order'>
                 <br>
-                <br>
-            </div>
+            </div> --}}
             <div class="center">
                 <input id='order' type='submit' value='Submit Order'>
             </div>
@@ -86,3 +94,7 @@
 </datalist> --}}
                 {{!-- <input class="resize1" id='productType' type='text' name='productType' placeholder='Product'> --}}
                 
+                {{!-- <button id="card-button">Card</button>
+                <button id="gift-button">Gift</button>
+                <button id="t-shirt-button">T-Shirt</button>
+                <button id="mug-button">Mug</button> --}}
