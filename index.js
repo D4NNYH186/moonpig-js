@@ -78,10 +78,12 @@ app.post('/order', async(req, res) => {
         })
         
        await newOrder.save()
+
+       console.log(newOrder._id);
+       
        //let factoryForTshirts = await factorySchema.find({//productType incudes Tshirt and capacity is greater than the other factory that can produce tshirts.})
-       let factoryForMugs = await factorySchema.find({productType: "Mugs"} );
-       let toBeUpdated = await orderSchema.factoryToProduce
-       let updateFactoryToProduce = await orderSchema.findOneAndUpdate(toBeUpdated, factoryForMugs, {new:true})
+  //     let factoryForMugs = await factorySchema.find({productType: "Mugs"} );
+  updateFactoryToProduce =await factorySchema.findOneAndUpdate({productType: "Mugs"}, { $push: { orders: newOrder._id } });
        console.log(updateFactoryToProduce)
     }
        //update the factory document with the order id to the orders array. 
@@ -185,3 +187,10 @@ app.get('/orderID', async (req, res)=>{
                     //     productType.input.textContent = ("T-Shirt")
                     // });
                     // 
+
+
+// search for gurnsey 
+
+// + orders Array
+
+// search orders db through orders array

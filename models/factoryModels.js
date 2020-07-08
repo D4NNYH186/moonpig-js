@@ -1,4 +1,4 @@
-const {Schema, model} = require ("mongoose");
+const {Schema, model, Object} = require ("mongoose");
 
 const factorySchema = new Schema ({
     factoryName: {type: String, required: true, unique: false },
@@ -6,7 +6,7 @@ const factorySchema = new Schema ({
     currentCapacity: {type: Number, required: false, unique: false},
     remainingCapacity: {type: Number, required: false, unique: false},
     totalCapacity: {type: Number, required: true, unique: false},
-    // orders: {type: Array}
+    orders: {type: [Schema.Types.ObjectId]}
     //orders array that has the ID's of the orders that will be produced in each different factory. 
 },
 {

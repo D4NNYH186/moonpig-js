@@ -10,8 +10,6 @@ const orderSchema = new Schema ({
     mug: {type: Number, required: false, unique: false },
     card: {type: Number, required: false, unique: false },
     gift: {type: Number, required: false, unique: false },
-    factoryToProduce: {type: String}
-         
  }, {
     toObject: {
         virtuals: true
