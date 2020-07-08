@@ -69,17 +69,37 @@ app.post('/order', async(req, res) => {
         
         console.log(newOrder._id);
         
-        //let factoryForTshirts = await factorySchema.find({//productType incudes Tshirt and capacity is greater than the other factory that can produce tshirts.})
+        // let factoryForTshirts = await factorySchema.find({//productType incudes Tshirt and capacity is greater than the other factory that can produce tshirts.})
         //     let factoryForMugs = await factorySchema.find({productType: "Mugs"} );
-        updateFactoryToProduce =await factorySchema.findOneAndUpdate({productType: "Mugs"}, { $push: { orders: newOrder._id }, $inc: {'mug': req.body.mug }});
+        // let totalProductsOrdered = 4
+        
+        let mug = req.body.mug
+        let tshirt = req.body.tshirt
+        let gift = req.body.gift
+        let card = req.body.card
+    
+        let totalProductsOrdered = (mug) + (tshirt) + (gift) + (card)
+    
+        
+        updateFactoryToProduce = await factorySchema.findOneAndUpdate({productType: "Mugs"}, { $push: { orders: newOrder._id }, $inc: {'mug': req.body.mug}, $inc: {'totalOrders': totalProductsOrdered}});
         console.log(updateFactoryToProduce)
-
+        console.log(totalProductsOrdered)
     }
+    
+
     //update the factory document with the order id to the orders array. 
     // factoryOrderLink()}
     res.redirect('orderID')
     
 });
+
+
+// const factoryWithMostCapacity = () => {
+
+//     if (factorySchema.remain)
+
+// }
+
 
 app.get('/orderID', async (req, res)=>{
     let id = await orderSchema.findOne({id: orderSchema._id})
@@ -122,7 +142,7 @@ app.listen(3000,()=>{
 //                 factoryName: "GuernseyLoveIsland Ltd Factory",
 //                 productType: ["Cards", "Mugs", "T-Shirts"],
 //                 totalCapacity: 10000,
-//                 currentCapacity:0,
+//                 totalOrders:0,
 //                 remainingCapacity:0,
 //                 mug: 0, 
 //                 card: 0, 
@@ -136,7 +156,7 @@ app.listen(3000,()=>{
 //                             factoryName: "ProFulfillingWorld Ltd Factory",
 //                             productType: ["Cards", "Gifts"],
 //                             totalCapacity: 5000,
-//                             currentCapacity:0,
+//                               totalOrders:0,
 //                         remainingCapacity:0,
 //                         gift:0 ,
 //                         card: 0, 
@@ -148,7 +168,7 @@ app.listen(3000,()=>{
 //                                 factoryName: "CygnificantlyCool Ltd Factory",
 //                                 productType: ["Gifts"],
 //                                 totalCapacity: 7000,
-//                                 currentCapacity:0,
+//                                 totalOrders:0,
 //                                 remainingCapacity:0,
 //                                 gift:0 ,
             
@@ -159,7 +179,7 @@ app.listen(3000,()=>{
 //                                         factoryName: "DoctorsPackingSolutions Ltd Factory",
 //                                         productType: ["T-Shirts"],
 //                                         totalCapacity: 2000,
-//                                         currentCapacity:0,
+//                                         totalOrders:0,
 //                                         remainingCapacity:0,
 //                                         tShirt: 0,
                 
