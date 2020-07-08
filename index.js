@@ -16,7 +16,8 @@ require('dotenv').config;
 
 const app = express();
 
-
+// Add Couterparts array to order schema. 
+// Each order that goes to two factories will be split and given it’s own ID, those id’s will be displayed in the counter parts array of the original order. 
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: false}))
@@ -39,19 +40,6 @@ app.get('/order', (req, res)=>{
     res.render('order')
 });
 
-// const factoryOrderLink = async () => {
-//     let Gorders = await orderSchema.aggregate([
-//         {$lookup:
-//                 {from: factorySchema,
-//                     localField: mug,
-//                     foreignField: factoryName,
-//                     as: factoryName,
-//                 }
-//          }
-//     ])
-//             console.log(Gorders)
-//             return Gorders
-// }
 
 
 
@@ -77,16 +65,17 @@ app.post('/order', async(req, res) => {
             
         })
         
-       await newOrder.save()
+        await newOrder.save()
+        
+        console.log(newOrder._id);
+        
+        //let factoryForTshirts = await factorySchema.find({//productType incudes Tshirt and capacity is greater than the other factory that can produce tshirts.})
+        //     let factoryForMugs = await factorySchema.find({productType: "Mugs"} );
+        updateFactoryToProduce =await factorySchema.findOneAndUpdate({productType: "Mugs"}, { $push: { orders: newOrder._id }, $inc: {'mug': req.body.mug }});
+        console.log(updateFactoryToProduce)
 
-       console.log(newOrder._id);
-       
-       //let factoryForTshirts = await factorySchema.find({//productType incudes Tshirt and capacity is greater than the other factory that can produce tshirts.})
-  //     let factoryForMugs = await factorySchema.find({productType: "Mugs"} );
-  updateFactoryToProduce =await factorySchema.findOneAndUpdate({productType: "Mugs"}, { $push: { orders: newOrder._id } });
-       console.log(updateFactoryToProduce)
     }
-       //update the factory document with the order id to the orders array. 
+    //update the factory document with the order id to the orders array. 
     // factoryOrderLink()}
     res.redirect('orderID')
     
@@ -99,98 +88,119 @@ app.get('/orderID', async (req, res)=>{
 })
 
 
-    app.get('/engineer', async (req, res)=>{
-        let data = await factorySchema.find({});
-        data = data.map((item) => item.toObject())
-        res.render('engineer', {data})
-        //: factoryName, productType, totalCapacity, currentCapacity, remainingCapacity
-    });
+app.get('/engineer', async (req, res)=>{
+    let data = await factorySchema.find({});
+    data = data.map((item) => item.toObject())
+    res.render('engineer', {data})
+    //: factoryName, productType, totalCapacity, currentCapacity, remainingCapacity
+});
+
+
+app.get('/factory', async (req, res)=>{
+    
+    let data1 = await orderSchema.find({});
+    data1 = data1.map((item) => item.toObject())
+    res.render('factory', {data1})
+});
+
+app.post('/factory', async (req, res) => {
+    let findFactory = await factorySchema.find({factoryName: req.body.findFactory})
+    findFactory = findFactory.map((item) => item.toObject())
+    console.log(findFactory)
+    res.render('factory', {findFactory})
+})
+
+
+
+app.listen(3000,()=>{
+    console.log('server is listening on port 3000')
+})
+
+
+
+// const guernseyFactory = new factorySchema({
+//                 factoryName: "GuernseyLoveIsland Ltd Factory",
+//                 productType: ["Cards", "Mugs", "T-Shirts"],
+//                 totalCapacity: 10000,
+//                 currentCapacity:0,
+//                 remainingCapacity:0,
+//                 mug: 0, 
+//                 card: 0, 
+//                 tShirt: 0,
     
     
-    app.get('/factory', async (req, res)=>{
-
-        let data1 = await orderSchema.find({});
-        data1 = data1.map((item) => item.toObject())
-        res.render('factory', {data1})
-    });
-
-    app.post('/factory', async (req, res) => {
-        let findFactory = await factorySchema.find({factoryName: req.body.findFactory})
-        findFactory = findFactory.map((item) => item.toObject())
-        console.log(findFactory)
-        res.render('factory', {findFactory})
-    })
-
+//             })
+//             guernseyFactory.save();
+    
+//             const proFactory = new factorySchema({
+//                             factoryName: "ProFulfillingWorld Ltd Factory",
+//                             productType: ["Cards", "Gifts"],
+//                             totalCapacity: 5000,
+//                             currentCapacity:0,
+//                         remainingCapacity:0,
+//                         gift:0 ,
+//                         card: 0, 
         
-    
-    app.listen(3000,()=>{
-        console.log('server is listening on port 3000')
-    })
-    
-
-
-
-    // const guernseyFactory = new factorySchema({
-    //         factoryName: "GuernseyLoveIsland Ltd Factory",
-    //         productType: ["Cards", "Mugs", "T-Shirts"],
-    //         totalCapacity: 10000,
-    //         currentCapacity:0,
-    //         remainingCapacity:0,
-
-    //     })
-    //     guernseyFactory.save();
+//                     })
+//                     proFactory.save();
         
-    //     const proFactory = new factorySchema({
-    //             factoryName: "ProFulfillingWorld Ltd Factory",
-    //             productType: ["Cards", "Gifts"],
-    //             totalCapacity: 5000,
-    //             currentCapacity:0,
-    //             remainingCapacity:0,
-
-    //         })
-    //         proFactory.save();
+//                     const coolFactory = new factorySchema({
+//                                 factoryName: "CygnificantlyCool Ltd Factory",
+//                                 productType: ["Gifts"],
+//                                 totalCapacity: 7000,
+//                                 currentCapacity:0,
+//                                 remainingCapacity:0,
+//                                 gift:0 ,
             
-    //         const coolFactory = new factorySchema({
-    //                 factoryName: "CygnificantlyCool Ltd Factory",
-    //                 productType: ["Gifts"],
-    //                 totalCapacity: 7000,
-    //                 currentCapacity:0,
-    //                 remainingCapacity:0,
-
-    //             })
-    //             coolFactory.save();
+//                             })
+//                             coolFactory.save();
+            
+//                             const doctorFactory = new factorySchema({
+//                                         factoryName: "DoctorsPackingSolutions Ltd Factory",
+//                                         productType: ["T-Shirts"],
+//                                         totalCapacity: 2000,
+//                                         currentCapacity:0,
+//                                         remainingCapacity:0,
+//                                         tShirt: 0,
                 
-    //             const doctorFactory = new factorySchema({
-    //                     factoryName: "DoctorsPackingSolutions Ltd Factory",
-    //                     productType: ["T-Shirts"],
-    //                     totalCapacity: 2000,
-    //                     currentCapacity:0,
-    //                     remainingCapacity:0,
-
-    //                 })
-    //                 doctorFactory.save();
-                    
-                    // const cardButton = document.getElementById("card-button");
-                    // const mugButton = document.getElementById("mug-button");
-                    // const tshirtButton = document.getElementById("t-shirt-button");
-                    // const giftButton = document.getElementById("gift-button");
-                    // cardButton.addEventListener("click", ()=> {
+//                                     })
+//                                     doctorFactory.save();
+                
+                // const cardButton = document.getElementById("card-button");
+                // const mugButton = document.getElementById("mug-button");
+                // const tshirtButton = document.getElementById("t-shirt-button");
+                // const giftButton = document.getElementById("gift-button");
+                // cardButton.addEventListener("click", ()=> {
                     //     productType.textContent = ("Card")
                     // });
                     // mugButton.addEventListener("click", ()=> {
-                    //     productType.input.textContent = ("Mug")
-                    // });
-                    // giftButton.addEventListener("click", ()=> {
-                    //     productType.input.textContent = ("Gift")
-                    // });
-                    // tshirtButton.addEventListener("click", ()=> {
-                    //     productType.input.textContent = ("T-Shirt")
-                    // });
-                    // 
-
-
-// search for gurnsey 
-
-// + orders Array
-
-// search orders db through orders array
+                        //     productType.input.textContent = ("Mug")
+                        // });
+                        // giftButton.addEventListener("click", ()=> {
+                            //     productType.input.textContent = ("Gift")
+                            // });
+                            // tshirtButton.addEventListener("click", ()=> {
+                                //     productType.input.textContent = ("T-Shirt")
+                                // });
+                                // 
+                                
+                                
+                                // search for gurnsey 
+                                
+                                // + orders Array
+                                
+                                // search orders db through orders array
+                                
+// const factoryOrderLink = async () => {
+//     let Gorders = await orderSchema.aggregate([
+//         {$lookup:
+//                 {from: factorySchema,
+//                     localField: mug,
+//                     foreignField: factoryName,
+//                     as: factoryName,
+//                 }
+//          }
+//     ])
+//             console.log(Gorders)
+//             return Gorders
+// }
