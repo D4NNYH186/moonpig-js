@@ -20,6 +20,8 @@ const factorySchema = new Schema ({
 })
 
 
+
+
 factorySchema.statics.findFactory = async function({findMe}) {
     await this.find({findMe})
 }
