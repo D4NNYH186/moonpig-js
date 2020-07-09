@@ -49,100 +49,114 @@ app.post('/order', async (req, res) => {
         res.render('order', { err: "EXCUSE ME... Please provide all details" });
         return;
     }
-    else {
 
-        const newOrder = new orderSchema({
-            fullName: req.body.fullName,
-            email: req.body.email,
-            orderDate: orderSchema.orderDate,
-            billingAddress: req.body.billingAddress,
-            dispatchAddress: req.body.dispatchAddress,
-            tshirt: req.body.tshirt,
-            mug: req.body.mug,
-            card: req.body.card,
-            gift: req.body.gift,
-            factoryToProduce: "empty"
+    const newOrder = new orderSchema({
+        fullName: req.body.fullName,
+        email: req.body.email,
+        orderDate: orderSchema.orderDate,
+        billingAddress: req.body.billingAddress,
+        dispatchAddress: req.body.dispatchAddress,
+        tshirt: req.body.tshirt,
+        mug: req.body.mug,
+        card: req.body.card,
+        gift: req.body.gift,
+        factoryToProduce: "empty"
+    })
 
-        })
+    await newOrder.save()
+    
+    
+    let items = []
 
-        await newOrder.save()
-
-        console.log(newOrder._id);
-
-        // let factoryForTshirts = await factorySchema.find({//productType incudes Tshirt and capacity is greater than the other factory that can produce tshirts.})
-        //     let factoryForMugs = await factorySchema.find({productType: "Mugs"} );
-        // let totalProductsOrdered = 4
-        let factory = await factorySchema.findOne({ productType: "Mugs" })
-        factory = factory.toObject()
-
-        const totalOrderQuanity = () => {
-            let mug = req.body.mug
-            let tshirt = req.body.tshirt
-            let gift = req.body.gift
-            let card = req.body.card
-            let totalProductsOrdered = +mug + +tshirt + +gift + +card
-
-            return totalProductsOrdered
-        }
+    
+    items.push({type: 'tshirt', quantity: req.body.tshirt})
+    items.push({type: 'mug', quantity: req.body.mug})
+    items.push({type: 'card', quantity: req.body.card})
+    items.push({type: 'gift', quantity: req.body.gift})
 
 
-        
+   for (const item of items) {
+       /**
+        * make sure that the quantity isnt undefined
+        */
+      const order = new orderSchema({
+        parent: newOrder._id,
+        type: item.type,
+        quantity: item.quantity
+      })
 
-        const remainingCapacity = () => {
-            let remainingCapacity = factory.remainingCapacity - totalOrderQuanity()
-            return remainingCapacity
-
-        }
-
-
-
-
-
-
-
-        /**
-         * move remainingcap totalorder to static method on schema
-         * 
-         * 
-         */
-
-
-
-        // const highestRemainingCapacityFactory = () => {
-        //     let remainingCapacity = factorySchema.find({})
-        // }
-
-        /**
-         * get the factory
-         * 
-         */
-
-         console.log(await factorySchema.findOne({productType: "Mugs", productType: "Gifts"}));
-         
-       
-     
-
-
-        updateFactoryToProduce = await factorySchema.findOneAndUpdate({ productType: "Mugs"}, { $push: { orders: newOrder._id },
-         $inc: {
-              'mug': req.body.mug,
-              'totalOrders': totalOrderQuanity()
-            },
-            remainingCapacity: remainingCapacity()
-        });
-
-        // updateTotalOrders = await factorySchema.findOneAndUpdate({})
-        //now working, however the total orders needs a seperate function, as at the moment it is just adding every item ordered and sending it to the factory that handles mugs. 
+      order.save()
 
     }
 
+   let factory = await factorySchema.findOne({ productType: "Mugs" })
+    factory = factory.toObject()
 
+    // const totalOrderQuanity = () => {
+    //     let mug = req.body.mug
+    //     let tshirt = req.body.tshirt
+    //     let gift = req.body.gift
+    //     let card = req.body.card
+    //     let totalProductsOrdered = +mug + +tshirt + +gift + +card
 
-    //update the factory document with the order id to the orders array. 
-    // factoryOrderLink()}
-    res.redirect('orderID')
+    //     return totalProductsOrdered
+    // }
+   updateFactoryToProduce = await factorySchema.findOneAndUpdate({ productType: order.items.type }, { $push: { orders: order._id },
+    $inc: {
+        'order': order.items,
+        'quantity': order.quantity,
+        // 'totalOrders': totalOrderQuanity()
+    },
+    // remainingCapacity: remainingCapacity()
+});
+
+res.redirect('orderID')
 
 });
+
+
+      /**
+       * find factory most availability that can also produce this type of product //findoneandupdate
+       * add suborder _id to found factory
+       * 
+       * -------
+       * 
+       * find factory that has most availability 
+       * 
+       */
+   
+
+   //------------------------
+
+    // let factory = await factorySchema.findOne({ productType: "Mugs" })
+    // factory = factory.toObject()
+
+    // const totalOrderQuanity = () => {
+    //     let mug = req.body.mug
+    //     let tshirt = req.body.tshirt
+    //     let gift = req.body.gift
+    //     let card = req.body.card
+    //     let totalProductsOrdered = +mug + +tshirt + +gift + +card
+
+    //     return totalProductsOrdered
+    // }
+
+//     const remainingCapacity = () => {
+//         let remainingCapacity = factory.remainingCapacity - totalOrderQuanity()
+//         return remainingCapacity
+//     }
+
+//     updateFactoryToProduce = await factorySchema.findOneAndUpdate({ productType: order.type }, { $push: { orders: order._id },
+//         $inc: {
+//             'order': req.body.order,
+//             'totalOrders': totalOrderQuanity()
+//         },
+//         remainingCapacity: remainingCapacity()
+//     });
+
+//     res.redirect('orderID')
+
+// });
 
 
 
