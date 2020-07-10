@@ -16,8 +16,6 @@
     <div class="factory-container">
     {{#each data1}}
        <ul>
-           <li> Factory Name: <br><br> {{this.factoryToProduce}}</li>
-           <br>
            <li> Order ID:<br><br>{{this.id}}</li>
            <br>
            <li> Order Date:<br><br>{{this.orderDate}}</li>
@@ -52,8 +50,11 @@
  <ul>
            <li> Factory Name:<br><br>{{this.factoryName}}</li>
            <br>
-           <li> Product Type:<br><br>{{this.productType}}</li>
+           <li> Remaining Capacity:<br><br>{{this.remainingCapacity}}</li>
            <br>
+           <li> Total Capacity:<br><br>{{this.totalCapacity}}</li>
+           <br>
+           <li>Orders: <br><br>{{this.orders}}</li>
        </ul>
 {{/each}}
 

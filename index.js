@@ -9,6 +9,7 @@ const { isNull } = require('util');
 const { db } = require('./models/orderModels');
 const orderModels = require('./models/orderModels');
 const factoryModels = require('./models/factoryModels');
+const subOrder = require('./models/subOrder')
 // const db1 = require('monk')
 // const favicon = require('serve-favicon')
 
@@ -44,7 +45,7 @@ app.get('/order', (req, res) => {
 
 
 app.post('/order', async (req, res) => {
-    if (!req.body.email == isNull || !req.body.dispatchAddress == isNull || !req.body.billingAddress == isNull || req.body.fullName == isNull) {
+    if (!req.body.email.length == isNull || !req.body.dispatchAddress.length == isNull || !req.body.billingAddress.length == isNull || req.body.fullName.length == isNull) {
 
         res.render('order', { err: "EXCUSE ME... Please provide all details" });
         return;
@@ -64,69 +65,44 @@ app.post('/order', async (req, res) => {
     })
 
     await newOrder.save()
-    
-    
+
+
     let items = []
 
-    
-    items.push({type: 'tshirt', quantity: req.body.tshirt})
-    items.push({type: 'mug', quantity: req.body.mug})
-    items.push({type: 'card', quantity: req.body.card})
-    items.push({type: 'gift', quantity: req.body.gift})
+
+    items.push({ type: 'T-Shirts', quantity: req.body.tshirt })
+    items.push({ type: 'Mugs', quantity: req.body.mug })
+    items.push({ type: 'Cards', quantity: req.body.card })
+    items.push({ type: 'Gifts', quantity: req.body.gift })
 
 
-   for (const item of items) {
-       /**
-        * make sure that the quantity isnt undefined
-        */
-      const order = new orderSchema({
-        parent: newOrder._id,
-        type: item.type,
-        quantity: item.quantity
-      })
+    for (const item of items) {
+        if (item.quantity == 'undefined') {
+            continue;
+        }
 
-      order.save()
+        const order = new subOrder({
+            parent: newOrder._id,
+            item: item.type,
+            quantity: item.quantity
+        })
+
+        order.save()
+
+        let doc = await factorySchema.find({productType: item.type})
+
+        let highestCap = doc.reduce((prev, current) => {
+            return (prev.remainingCapacity > current.remainingCapacity) ? prev : current
+        })
+        console.log(item.quantity);
+        
+        highestCap.remainingCapacity -= item.quantity
+        highestCap.orders.push(order._id)
+
+        await highestCap.save()
+        
 
     }
-
-   let factory = await factorySchema.findOne({ productType: "Mugs" })
-    factory = factory.toObject()
-
-    // const totalOrderQuanity = () => {
-    //     let mug = req.body.mug
-    //     let tshirt = req.body.tshirt
-    //     let gift = req.body.gift
-    //     let card = req.body.card
-    //     let totalProductsOrdered = +mug + +tshirt + +gift + +card
-
-    //     return totalProductsOrdered
-    // }
-   updateFactoryToProduce = await factorySchema.findOneAndUpdate({ productType: order.items.type }, { $push: { orders: order._id },
-    $inc: {
-        'order': order.items,
-        'quantity': order.quantity,
-        // 'totalOrders': totalOrderQuanity()
-    },
-    // remainingCapacity: remainingCapacity()
-});
-
-res.redirect('orderID')
-
-});
-
-
-      /**
-       * find factory most availability that can also produce this type of product //findoneandupdate
-       * add suborder _id to found factory
-       * 
-       * -------
-       * 
-       * find factory that has most availability 
-       * 
-       */
-   
-
-   //------------------------
 
     // let factory = await factorySchema.findOne({ productType: "Mugs" })
     // factory = factory.toObject()
@@ -140,6 +116,46 @@ res.redirect('orderID')
 
     //     return totalProductsOrdered
     // }
+    // updateFactoryToProduce = await factorySchema.findOneAndUpdate({ productType: order.items.type }, {
+    //     $push: { orders: order._id },
+    //     $inc: {
+    //         'order': order.items,
+    //         'quantity': order.quantity,
+    //         // 'totalOrders': totalOrderQuanity()
+    //     },
+    //     // remainingCapacity: remainingCapacity()
+    // });
+
+    res.redirect('orderID')
+
+});
+
+
+/**
+ * find factory most availability that can also produce this type of product //findoneandupdate
+ * add suborder _id to found factory
+ * 
+ * -------
+ * 
+ * find factory that has most availability 
+ * 
+ */
+
+
+//------------------------
+
+// let factory = await factorySchema.findOne({ productType: "Mugs" })
+// factory = factory.toObject()
+
+// const totalOrderQuanity = () => {
+//     let mug = req.body.mug
+//     let tshirt = req.body.tshirt
+//     let gift = req.body.gift
+//     let card = req.body.card
+//     let totalProductsOrdered = +mug + +tshirt + +gift + +card
+
+//     return totalProductsOrdered
+// }
 
 //     const remainingCapacity = () => {
 //         let remainingCapacity = factory.remainingCapacity - totalOrderQuanity()
@@ -193,7 +209,9 @@ app.post('/factory', async (req, res) => {
     let findFactory = await factorySchema.find({ factoryName: req.body.findFactory })
     findFactory = findFactory.map((item) => item.toObject())
     console.log(findFactory)
+    
     res.render('factory', { findFactory })
+    
 })
 
 
@@ -204,12 +222,12 @@ app.listen(3000, () => {
 
 
 
-// const guernseyFactory = new factorySchema({
-//                 factoryName: "GuernseyLoveIsland Ltd Factory",
-//                 productType: ["Cards", "Mugs", "T-Shirts"],
-//                 totalCapacity: 10000,
-//                 totalOrders:0,
-//                 remainingCapacity: 10000,
+//  const guernseyFactory = new factorySchema({
+//                  factoryName: "GuernseyLoveIsland Ltd Factory",
+//                  productType: ["Cards", "Mugs", "T-Shirts"],
+//                  totalCapacity: 10000,
+//                  totalOrders:0,
+//                  remainingCapacity: 10000,
 //                 mug: 0, 
 //                 card: 0, 
 //                 tShirt: 0,
@@ -231,7 +249,7 @@ app.listen(3000, () => {
 //                     proFactory.save();
 
 //                     const coolFactory = new factorySchema({
-//                                 factoryName: "CygnificantlyCool Ltd Factory",
+//                                 // factoryName: "CygnificantlyCool Ltd Factory",
 //                                 productType: ["Gifts"],
 //                                 totalCapacity: 7000,
 //                                 totalOrders:0,
