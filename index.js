@@ -10,20 +10,15 @@ const { db } = require('./models/orderModels');
 const orderModels = require('./models/orderModels');
 const factoryModels = require('./models/factoryModels');
 const subOrder = require('./models/subOrder')
-// const db1 = require('monk')
-// const favicon = require('serve-favicon')
 
 require('dotenv').config;
 
 const app = express();
 
-// Add Couterparts array to order schema. 
-// Each order that goes to two factories will be split and given it’s own ID, those id’s will be displayed in the counter parts array of the original order. 
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-// app.use(favicon(path.join(__dirname, 'public/moon-logo.png')));
 
 app.engine('.hbs', hbs({
     defaultLayout: 'layout',
@@ -43,13 +38,7 @@ app.get('/order', (req, res) => {
 
 
 
-
 app.post('/order', async (req, res) => {
-    if (!req.body.email.length == isNull || !req.body.dispatchAddress.length == isNull || !req.body.billingAddress.length == isNull || req.body.fullName.length == isNull) {
-
-        res.render('order', { err: "EXCUSE ME... Please provide all details" });
-        return;
-    }
 
     const newOrder = new orderSchema({
         fullName: req.body.fullName,
@@ -68,7 +57,6 @@ app.post('/order', async (req, res) => {
 
 
     let items = []
-
 
     items.push({ type: 'T-Shirts', quantity: req.body.tshirt })
     items.push({ type: 'Mugs', quantity: req.body.mug })
@@ -90,102 +78,23 @@ app.post('/order', async (req, res) => {
         order.save()
 
         let doc = await factorySchema.find({productType: item.type})
-
         let highestCap = doc.reduce((prev, current) => {
             return (prev.remainingCapacity > current.remainingCapacity) ? prev : current
         })
-        console.log(item.quantity);
         
         highestCap.remainingCapacity -= item.quantity
         highestCap.orders.push(order._id)
 
         await highestCap.save()
         
-
     }
-
-    // let factory = await factorySchema.findOne({ productType: "Mugs" })
-    // factory = factory.toObject()
-
-    // const totalOrderQuanity = () => {
-    //     let mug = req.body.mug
-    //     let tshirt = req.body.tshirt
-    //     let gift = req.body.gift
-    //     let card = req.body.card
-    //     let totalProductsOrdered = +mug + +tshirt + +gift + +card
-
-    //     return totalProductsOrdered
-    // }
-    // updateFactoryToProduce = await factorySchema.findOneAndUpdate({ productType: order.items.type }, {
-    //     $push: { orders: order._id },
-    //     $inc: {
-    //         'order': order.items,
-    //         'quantity': order.quantity,
-    //         // 'totalOrders': totalOrderQuanity()
-    //     },
-    //     // remainingCapacity: remainingCapacity()
-    // });
-
+    
     res.redirect('orderID')
 
 });
 
-
-/**
- * find factory most availability that can also produce this type of product //findoneandupdate
- * add suborder _id to found factory
- * 
- * -------
- * 
- * find factory that has most availability 
- * 
- */
-
-
-//------------------------
-
-// let factory = await factorySchema.findOne({ productType: "Mugs" })
-// factory = factory.toObject()
-
-// const totalOrderQuanity = () => {
-//     let mug = req.body.mug
-//     let tshirt = req.body.tshirt
-//     let gift = req.body.gift
-//     let card = req.body.card
-//     let totalProductsOrdered = +mug + +tshirt + +gift + +card
-
-//     return totalProductsOrdered
-// }
-
-//     const remainingCapacity = () => {
-//         let remainingCapacity = factory.remainingCapacity - totalOrderQuanity()
-//         return remainingCapacity
-//     }
-
-//     updateFactoryToProduce = await factorySchema.findOneAndUpdate({ productType: order.type }, { $push: { orders: order._id },
-//         $inc: {
-//             'order': req.body.order,
-//             'totalOrders': totalOrderQuanity()
-//         },
-//         remainingCapacity: remainingCapacity()
-//     });
-
-//     res.redirect('orderID')
-
-// });
-
-
-
-// const factoryWithMostCapacity = () => {
-
-//     if (factorySchema.remain)
-
-// }
-
-
 app.get('/orderID', async (req, res) => {
     let id = await orderSchema.findOne({ id: orderSchema._id })
-    console.log(id._id)
     res.render('orderID', { id: id._id })
 })
 
@@ -194,16 +103,15 @@ app.get('/engineer', async (req, res) => {
     let data = await factorySchema.find({});
     data = data.map((item) => item.toObject())
     res.render('engineer', { data })
-    //: factoryName, productType, totalCapacity, currentCapacity, remainingCapacity
 });
 
 
 app.get('/factory', async (req, res) => {
-
     let data1 = await orderSchema.find({});
     data1 = data1.map((item) => item.toObject())
     res.render('factory', { data1 })
 });
+
 
 app.post('/factory', async (req, res) => {
     let findFactory = await factorySchema.find({ factoryName: req.body.findFactory })
@@ -215,9 +123,8 @@ app.post('/factory', async (req, res) => {
 })
 
 
-
-app.listen(3000, () => {
-    console.log('server is listening on port 3000')
+app.listen(3001, () => {
+    console.log('server is listening on port 3001')
 })
 
 
@@ -270,41 +177,3 @@ app.listen(3000, () => {
 //                                     })
 //                                     doctorFactory.save();
 
-                // const cardButton = document.getElementById("card-button");
-                // const mugButton = document.getElementById("mug-button");
-                // const tshirtButton = document.getElementById("t-shirt-button");
-                // const giftButton = document.getElementById("gift-button");
-                // cardButton.addEventListener("click", ()=> {
-                    //     productType.textContent = ("Card")
-                    // });
-                    // mugButton.addEventListener("click", ()=> {
-                        //     productType.input.textContent = ("Mug")
-                        // });
-                        // giftButton.addEventListener("click", ()=> {
-                            //     productType.input.textContent = ("Gift")
-                            // });
-                            // tshirtButton.addEventListener("click", ()=> {
-                                //     productType.input.textContent = ("T-Shirt")
-                                // });
-                                // 
-
-
-                                // search for gurnsey 
-
-                                // + orders Array
-
-                                // search orders db through orders array
-
-// const factoryOrderLink = async () => {
-//     let Gorders = await orderSchema.aggregate([
-//         {$lookup:
-//                 {from: factorySchema,
-//                     localField: mug,
-//                     foreignField: factoryName,
-//                     as: factoryName,
-//                 }
-//          }
-//     ])
-//             console.log(Gorders)
-//             return Gorders
-// }
